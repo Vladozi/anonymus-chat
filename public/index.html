@@ -3,27 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Chat</title>
+    <title>Kiuvinme - Anonymous Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
         <div id="username-entry">
-            <h1>Welcome to Anonymous Chat</h1>
+            <h1 class="app-title">Kiuvinme</h1>
+            <p class="tagline">Connect Anonymously</p>
             <p>Online: <span id="online-count">0</span></p>
             <input type="text" id="username-input" placeholder="Enter your username (optional)">
             <button id="join-button">Join Chat</button>
         </div>
 
         <div id="chat-container" style="display: none;">
-            <h2>Chatting as <span id="your-username-display"></span></h2>
-            <p>Online: <span id="online-count-chat">0</span></p>
+            <div class="chat-header">
+                <h2 class="app-title-chat">Kiuvinme</h2>
+                <p>Online: <span id="online-count-chat">0</span></p>
+            </div>
+            <p class="chatting-as-info">Chatting as <span id="your-username-display"></span></p>
             <p id="status-message">Connecting...</p>
+            
             <div id="chat-messages">
                 <!-- Messages will appear here -->
             </div>
+            
+            <div id="emoji-picker" class="emoji-picker-hidden">
+                <!-- Emojis will be populated here by JS -->
+            </div>
+
             <div id="message-input-area">
                 <input type="text" id="message-input" placeholder="Type your message..." disabled>
+                <button id="emoji-button" aria-label="Toggle emoji picker" disabled>😀</button>
                 <button id="send-button" disabled>Send</button>
             </div>
             <button id="new-partner-button" disabled>Find New Partner</button>
