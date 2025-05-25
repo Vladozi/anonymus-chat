@@ -25,38 +25,36 @@ html {
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
-    padding: 10px; /* Small padding around the app */
+    padding: 5px; /* Minimal padding for the body */
     background-color: var(--primary-bg);
     color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensure body takes full viewport height */
+    min-height: 100vh;
     box-sizing: border-box;
-    overflow: hidden; /* Prevent scrollbars on body due to app size */
+    overflow: hidden; 
 }
 
 #app {
     background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    width: 100%; /* Takes full width of padded body */
-    height: 100%; /* Takes full height of padded body */
-    max-width: 1200px; /* Optional: constrain max width on very large screens */
-    display: flex; /* To center username-entry initially */
+    padding: 10px; /* Minimal internal padding for the app container */
+    border-radius: 8px; /* Slightly smaller radius */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    width: 100%; 
+    height: 100%; 
+    max-width: 1600px; /* Allow it to be quite wide */
+    display: flex; 
     flex-direction: column;
-    justify-content: center; /* Center username-entry */
-    align-items: center; /* Center username-entry */
+    justify-content: center; 
+    align-items: center; 
     transition: all 0.3s ease-in-out;
     box-sizing: border-box;
 }
 
-/* When chat is active, #app will allow #chat-container to grow */
 #app.chat-active {
-    justify-content: flex-start; /* Align chat container to top */
-    align-items: stretch; /* Stretch chat container horizontally */
-    padding: 15px; /* Slightly reduce padding for more chat space */
+    justify-content: flex-start; 
+    align-items: stretch; 
 }
 
 
@@ -65,23 +63,24 @@ body {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 450px; /* Keep username entry form a reasonable size */
+    max-width: 400px; 
     padding: 20px;
 }
 
 #chat-container {
-    display: none; /* Initially hidden, shown by JS */
+    display: none; 
     flex-direction: column;
-    gap: 10px; /* Reduced gap for tighter layout */
+    gap: 8px; /* Reduced gap for tighter layout */
     width: 100%;
-    height: 100%; /* Will take full height of #app in chat-active mode */
-    flex-grow: 1; /* Allows chat-container to take available space in #app */
+    height: 100%; 
+    flex-grow: 1; 
+    overflow: scroll;
 }
 
 .app-title, .app-title-chat {
     text-align: center;
     font-weight: 700;
-    font-size: 2.8em;
+    font-size: 2.5em; /* Slightly smaller for more space */
     color: var(--accent-green);
     margin-bottom: 0px;
     letter-spacing: 1px;
@@ -93,7 +92,7 @@ body {
     to { text-shadow: 0 0 15px rgba(0, 242, 169, 0.4), 0 0 25px rgba(0, 242, 169, 0.3); }
 }
 .app-title-chat {
-    font-size: 1.6em; /* Smaller title in chat header */
+    font-size: 1.5em; 
     margin: 0;
     animation: none;
     text-shadow: 0 0 8px rgba(0, 242, 169, 0.2);
@@ -103,29 +102,29 @@ body {
     color: var(--text-secondary);
     margin-top: -10px;
     margin-bottom: 15px;
-    font-size: 0.95em;
+    font-size: 0.9em;
 }
 p {
     color: var(--text-secondary);
-    line-height: 1.6;
-    margin-top: 0.3em;
-    margin-bottom: 0.3em;
+    line-height: 1.5;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
 p > span {
     color: var(--text-primary);
     font-weight: 600;
 }
 .chatting-as-info {
-    font-size: 0.9em;
+    font-size: 0.85em;
     text-align: center;
 }
 
 input[type="text"] {
-    padding: 12px 15px;
+    padding: 10px 12px; /* Slightly less padding */
     background-color: var(--input-bg);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -136,31 +135,31 @@ input[type="text"]::placeholder {
 input[type="text"]:focus {
     outline: none;
     border-color: var(--accent-green);
-    box-shadow: 0 0 0 3px rgba(0, 242, 169, 0.2);
+    box-shadow: 0 0 0 2px rgba(0, 242, 169, 0.15);
 }
 
 button {
-    padding: 12px 20px;
+    padding: 10px 18px; /* Slightly less padding */
     background-color: var(--accent-green);
     color: var(--primary-bg);
     font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1.05em;
+    font-size: 1em; /* Slightly smaller button font */
     transition: background-color 0.2s ease-in-out, transform 0.15s ease-out, box-shadow 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    flex-shrink: 0; /* Prevent buttons from shrinking in flex containers */
+    flex-shrink: 0; 
 }
 button:hover:not(:disabled) {
     background-color: var(--accent-green-darker);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 242, 169, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 242, 169, 0.2);
 }
 button:active:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 10px rgba(0, 242, 169, 0.2);
+    transform: translateY(0px);
+    box-shadow: 0 1px 5px rgba(0, 242, 169, 0.15);
 }
 button:disabled {
     background-color: #555c6e;
@@ -174,81 +173,99 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0; /* Prevent header from shrinking */
+    flex-shrink: 0; 
 }
 
 #chat-messages {
-    /* height: 400px; REMOVED fixed height */
-    flex-grow: 1; /* THIS IS KEY for making it take available space */
+    flex-grow: 1; 
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 15px;
+    border-radius: 6px;
+    padding: 12px;
     overflow-y: auto;
     background-color: var(--secondary-bg);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-green) var(--input-bg);
-    min-height: 100px; /* Minimum height it should have */
+    min-height: 500px; 
+    max-height: 500px;
+    overflow: scroll;
 }
 #chat-messages::-webkit-scrollbar { width: 8px; }
 #chat-messages::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 4px; }
-#chat-messages::-webkit-scrollbar-thumb { background-color: var(--accent-green); border-radius: 4px; border: 2px solid var(--input-bg); }
+#chat-messages::-webkit-scrollbar-thumb { background-color: var(--accent-green); border-radius: 4px;  }
 
 @keyframes fadeInSlideUp {
-    from { opacity: 0; transform: translateY(15px) scale(0.98); }
+    from { opacity: 0; transform: translateY(10px) scale(0.99); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .message {
-    padding: 10px 15px;
-    border-radius: 18px;
-    max-width: 75%;
-    word-wrap: break-word;
-    line-height: 1.5;
-    animation: fadeInSlideUp 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    /* Keep your existing .message styles, including: */
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 200px;
+    line-height: 1.4;
+    animation: fadeInSlideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background-color:  var(--message-own-bg);
+    border-bottom-left-radius: 5px;
+    /* Ensure these are here for all messages as a base */
+    overflow-wrap: break-word !important; /* Force it if needed */
+    word-wrap: break-word !important;     /* Force it if needed */
+    word-break: break-all;   /* This is more aggressive, try this if the above aren't enough */
+    white-space: normal !important; 
 }
+
 .message.own {
-    background-color: var(--message-own-bg);
-    color: var(--text-primary);
+    background-color:var(--accent-green)  ;
+    color: var(--primary-bg);
+   
     align-self: flex-end;
-    border-bottom-right-radius: 6px;
+    border-bottom-right-radius: 5px;
+
+    /* ---- ADD OR ENSURE THESE ARE PRESENT AND NOT OVERRIDDEN ---- */
+    overflow-wrap: break-word !important; /* Force it if needed */
+    word-wrap: break-word !important;     /* Force it if needed */
+    word-break: break-all;   /* This is more aggressive, try this if the above aren't enough */
+    white-space: normal !important;   /* Force it if needed */
+    /* ---------------------------------------------------------- */
 }
-.message.own::before { content: "You: "; font-weight: 600; color: var(--accent-green); margin-right: 5px; }
-.message.other {
-    background-color: var(--message-other-bg);
-    color: var(--text-primary);
-    align-self: flex-start;
-    border-bottom-left-radius: 6px;
-}
+
+/* .message.own::before {
+    content: "You: ";
+    font-weight: 600;
+    color: var(--accent-green);
+    margin-right: 4px;
+    /* This is display: inline by default, which should be fine.
+       If it were inline-block, it could affect layout more. */
+
 .message.system {
     background-color: var(--system-message-bg);
     color: var(--system-message-text);
     font-style: italic;
     text-align: center;
     align-self: center;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 0.9em;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
     box-shadow: none;
 }
 
 #message-input-area {
     display: flex;
-    gap: 10px;
-    flex-shrink: 0; /* Prevent input area from shrinking */
+    gap: 8px;
+    flex-shrink: 0; 
 }
 #message-input {
-    flex-grow: 1; /* Input field takes available width */
+    flex-grow: 1; 
 }
 #emoji-button {
-    padding: 0 12px; /* Make emoji button a bit smaller */
-    font-size: 1.3em; /* Larger emoji icon */
-    text-transform: none; /* No uppercase for emoji */
-    background-color: var(--input-bg); /* Match input field style */
+    padding: 0 10px; 
+    font-size: 1.2em; 
+    text-transform: none; 
+    background-color: var(--input-bg); 
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
 }
@@ -256,10 +273,10 @@ button:disabled {
     color: var(--accent-green);
     border-color: var(--accent-green);
     background-color: var(--secondary-bg);
-    transform: none; /* No hover transform */
+    transform: none; 
     box-shadow: none;
 }
-#emoji-button.active { /* Style when picker is open */
+#emoji-button.active { 
     color: var(--accent-green);
     border-color: var(--accent-green);
 }
@@ -268,32 +285,33 @@ button:disabled {
 #emoji-picker {
     background-color: var(--secondary-bg);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 10px; /* Space between picker and input area */
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px; 
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-    gap: 8px;
-    max-height: 150px; /* Limit height and make it scrollable */
+    grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+    gap: 6px;
+    max-height: 120px; /* Slightly smaller max height */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-green) var(--input-bg);
-    flex-shrink: 0; /* Prevent from shrinking */
+    flex-shrink: 0; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 #emoji-picker::-webkit-scrollbar { width: 6px; }
 #emoji-picker::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 3px; }
 #emoji-picker::-webkit-scrollbar-thumb { background-color: var(--accent-green); border-radius: 3px; }
 
 .emoji-picker-hidden {
-    display: none !important; /* Use important if needed to override grid display */
+    display: none !important; 
 }
 .emoji-item {
-    font-size: 1.6em;
+    font-size: 1.5em;
     text-align: center;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
+    padding: 4px;
+    border-radius: 5px;
+    transition: background-color 0.15s ease;
 }
 .emoji-item:hover {
     background-color: var(--input-bg);
@@ -304,9 +322,10 @@ button:disabled {
     text-align: center;
     color: var(--text-secondary);
     font-style: italic;
-    min-height: 1.6em;
+    min-height: 1.5em;
     transition: color 0.3s ease;
     flex-shrink: 0;
+    font-size: 0.9em;
 }
 #your-username-display {
     font-weight: bold;
@@ -315,10 +334,10 @@ button:disabled {
 #new-partner-button {
     background-color: #495057;
     color: var(--text-primary);
-    margin-top: 5px; /* Add some space if emoji picker is not visible */
+    margin-top: 5px; 
     flex-shrink: 0;
 }
 #new-partner-button:hover:not(:disabled) {
     background-color: #5a6268;
-    box-shadow: 0 4px 15px rgba(0,0,0, 0.2);
+    box-shadow: 0 3px 10px rgba(0,0,0, 0.2);
 }

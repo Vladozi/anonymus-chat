@@ -1,6 +1,6 @@
 // public/client.js
 document.addEventListener('DOMContentLoaded', () => {
-    const appDiv = document.getElementById('app'); // Get #app element
+    const appDiv = document.getElementById('app');
     const usernameEntryDiv = document.getElementById('username-entry');
     const chatContainerDiv = document.getElementById('chat-container');
     const usernameInput = document.getElementById('username-input');
@@ -23,15 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let myUsername = '';
     let currentPartnerUsername = '';
 
-    // Define Emojis
     const emojis = [
         '😀', '😁', '😂', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘',
         '😗', '😙', '😚', '🙂', '🤗', '🤔', '😐', '😑', '😶', '🙄', '😏', '😣', '😥',
         '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓',
         '😔', '😕', '🙃', '🤑', '😲', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦',
         '😧', '😨', '😩', '😬', '😰', '😱', '😳', '😵', '😡', '😠', '😷', '🤒', '🤕',
-        '🤢', '🤧', '😇', '🤠', '🤡', '🤥', '🤓', '😈', '👿', '👹', '👺', '💀', '👻',
-        '👽', '🤖', '💩', '👍', '👎', '👌', '👋', '🙏', '❤️', '💔', '🎉', '✨', '🔥', '💯'
+        '🤢', '🤧', '😇', '🥳', '🥺', '🥰', '🤩', '🥲', '💀', '👻', '👽', '🤖', '💩', 
+        '👍', '👎', '👌', '👋', '🙏', '❤️', '💔', '🎉', '✨', '🔥', '💯', '👀', '🧠', '🤏'
     ];
 
     function populateEmojiPicker() {
@@ -40,16 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const emojiSpan = document.createElement('span');
             emojiSpan.classList.add('emoji-item');
             emojiSpan.textContent = emoji;
-            emojiSpan.addEventListener('click', () => {
+            emojiSpan.setAttribute('role', 'button'); // Accessibility
+            emojiSpan.setAttribute('aria-label', `Emoji ${emoji}`); // Accessibility
+            emojiSpan.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent this click from bubbling to document
                 messageInput.value += emoji;
                 messageInput.focus();
-                // Optionally close picker after selection:
+                // Optional: Close picker after selection
                 // emojiPickerDiv.classList.add('emoji-picker-hidden');
                 // emojiButton.classList.remove('active');
             });
             emojiPickerDiv.appendChild(emojiSpan);
         });
     }
+
 
     function updateOnlineCount(count) {
         onlineCountSpan.textContent = count;
@@ -68,12 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
             messageDiv.textContent = text;
         } else {
             messageDiv.classList.add('other');
-            messageDiv.textContent = `${senderUsername}: ${text}`;
+            messageDiv.textContent = `${senderUsername} : ${text}`;
         }
         chatMessagesDiv.appendChild(messageDiv);
-        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-    }
 
+        requestAnimationFrame(() => {
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        });
+     
+    }
+  
     function setChatActiveState(isActive) {
         if (isActive) {
             appDiv.classList.add('chat-active');
@@ -83,8 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
             appDiv.classList.remove('chat-active');
             usernameEntryDiv.style.display = 'flex';
             chatContainerDiv.style.display = 'none';
+            // Ensure emoji picker is hidden if reverting to username entry
+            emojiPickerDiv.classList.add('emoji-picker-hidden');
+            emojiButton.classList.remove('active');
         }
     }
+
+    function updateChatControlsState(isChatting) {
+        messageInput.disabled = !isChatting;
+        sendButton.disabled = !isChatting;
+        emojiButton.disabled = !isChatting;
+        newPartnerButton.disabled = !isChatting; // Can only find new partner if currently matched or was matched
+
+        if (!isChatting) {
+            emojiPickerDiv.classList.add('emoji-picker-hidden');
+            emojiButton.classList.remove('active');
+        }
+    }
+
 
     function connectWebSocket() {
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -109,30 +132,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'joined':
                     myUsername = data.yourUsername;
                     yourUsernameDisplay.textContent = myUsername;
-                    setChatActiveState(true); // Activate chat layout
+                    setChatActiveState(true); 
                     statusMessageP.textContent = 'Waiting for a partner...';
-                    messageInput.disabled = true;
-                    sendButton.disabled = true;
-                    emojiButton.disabled = true;
-                    newPartnerButton.disabled = true;
+                    updateChatControlsState(false); // Not chatting yet, just waiting
+                    currentPartnerUsername = '';
                     break;
                 case 'waiting':
                     statusMessageP.textContent = 'Waiting for a partner...';
-                    messageInput.disabled = true;
-                    sendButton.disabled = true;
-                    emojiButton.disabled = true;
-                    newPartnerButton.disabled = true;
+                    updateChatControlsState(false); // Still waiting
                     currentPartnerUsername = '';
-                    emojiPickerDiv.classList.add('emoji-picker-hidden');
-                    emojiButton.classList.remove('active');
                     break;
                 case 'matched':
                     currentPartnerUsername = data.partnerUsername;
                     statusMessageP.textContent = `You are now chatting with ${currentPartnerUsername}!`;
-                    messageInput.disabled = false;
-                    sendButton.disabled = false;
-                    emojiButton.disabled = false;
-                    newPartnerButton.disabled = false;
+                    updateChatControlsState(true); // Now chatting
+                    newPartnerButton.disabled = false; // Explicitly enable
                     messageInput.focus();
                     chatMessagesDiv.innerHTML = ''; 
                     addMessageToChat(`You're connected with ${data.partnerUsername}. Say hi!`, null, 'system');
@@ -143,22 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'partnerDisconnected':
                     statusMessageP.textContent = `Your partner (${currentPartnerUsername || 'User'}) disconnected. Looking for a new one...`;
                     addMessageToChat(`${currentPartnerUsername || 'Your partner'} disconnected. Waiting for a new match.`, null, 'system');
-                    messageInput.disabled = true;
-                    sendButton.disabled = true;
-                    emojiButton.disabled = true;
+                    updateChatControlsState(false); // No longer actively chatting with this partner
+                    newPartnerButton.disabled = true; // Can't seek new if already looking by default
                     currentPartnerUsername = '';
-                    emojiPickerDiv.classList.add('emoji-picker-hidden');
-                    emojiButton.classList.remove('active');
                     break;
                 case 'partnerLeft':
                     statusMessageP.textContent = `Your partner (${currentPartnerUsername || 'User'}) left. Looking for a new one...`;
                     addMessageToChat(`${currentPartnerUsername || 'Your partner'} left. Waiting for a new match.`, null, 'system');
-                    messageInput.disabled = true;
-                    sendButton.disabled = true;
-                    emojiButton.disabled = true;
+                    updateChatControlsState(false); // No longer actively chatting
+                    newPartnerButton.disabled = true;
                     currentPartnerUsername = '';
-                    emojiPickerDiv.classList.add('emoji-picker-hidden');
-                    emojiButton.classList.remove('active');
                     break;
                 default:
                     console.warn('Unknown message type:', data.type);
@@ -169,28 +177,17 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('WebSocket disconnected');
             statusMessageP.textContent = 'Disconnected. Please refresh to rejoin.';
             addMessageToChat('Disconnected from server.', null, 'system');
-            messageInput.disabled = true;
-            sendButton.disabled = true;
-            emojiButton.disabled = true;
-            newPartnerButton.disabled = true;
+            updateChatControlsState(false);
             currentPartnerUsername = '';
-            emojiPickerDiv.classList.add('emoji-picker-hidden');
-            emojiButton.classList.remove('active');
-            // Optionally, revert to username entry screen:
-            // setChatActiveState(false); 
+            // Optional: setChatActiveState(false); // Revert to username screen
         };
 
         socket.onerror = (error) => {
             console.error('WebSocket error:', error);
             statusMessageP.textContent = 'Connection error. Please refresh.';
             addMessageToChat('Connection error.', null, 'system');
-            messageInput.disabled = true;
-            sendButton.disabled = true;
-            emojiButton.disabled = true;
-            newPartnerButton.disabled = true;
+            updateChatControlsState(false);
             currentPartnerUsername = '';
-            emojiPickerDiv.classList.add('emoji-picker-hidden');
-            emojiButton.classList.remove('active');
         };
     }
 
@@ -219,40 +216,40 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.send(JSON.stringify({ type: 'leaveChat' }));
             statusMessageP.textContent = 'Looking for a new partner...';
             addMessageToChat('You chose to find a new partner. Waiting...', null, 'system');
-            messageInput.disabled = true;
-            sendButton.disabled = true;
-            emojiButton.disabled = true;
+            updateChatControlsState(false); // Not actively chatting while searching
+            newPartnerButton.disabled = true; // Disable while actively searching
             currentPartnerUsername = '';
+        }
+    });
+  
+
+    emojiButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // CRITICAL: Prevents this click from being caught by the document's listener
+        emojiPickerDiv.classList.toggle('emoji-picker-hidden');
+        emojiButton.classList.toggle('active');
+        // Populate only if opening and picker is currently empty
+        if (!emojiPickerDiv.classList.contains('emoji-picker-hidden') && emojiPickerDiv.children.length === 0) {
+            populateEmojiPicker();
+        }
+    });
+    
+       // Click outside emoji picker to close it
+       document.addEventListener('click', function(event) {
+        // Only proceed if the picker is actually visible
+        if (emojiPickerDiv.classList.contains('emoji-picker-hidden')) {
+            return; 
+        }
+
+        const isClickInsidePicker = emojiPickerDiv.contains(event.target);
+        const isClickOnEmojiButton = emojiButton.contains(event.target);
+
+        if (!isClickInsidePicker && !isClickOnEmojiButton) {
             emojiPickerDiv.classList.add('emoji-picker-hidden');
             emojiButton.classList.remove('active');
         }
     });
 
-    emojiButton.addEventListener('click', () => {
-        emojiPickerDiv.classList.toggle('emoji-picker-hidden');
-        emojiButton.classList.toggle('active');
-        if (!emojiPickerDiv.classList.contains('emoji-picker-hidden') && emojiPickerDiv.innerHTML === '') {
-            // Populate only if opening and empty
-            populateEmojiPicker();
-        }
-    });
-    
-    // Click outside emoji picker to close it
-    document.addEventListener('click', function(event) {
-        const isClickInsidePicker = emojiPickerDiv.contains(event.target);
-        const isClickOnEmojiButton = emojiButton.contains(event.target);
-
-        if (!isClickInsidePicker && !isClickOnEmojiButton) {
-            if (!emojiPickerDiv.classList.contains('emoji-picker-hidden')) {
-                emojiPickerDiv.classList.add('emoji-picker-hidden');
-                emojiButton.classList.remove('active');
-            }
-        }
-    });
-
-
     // Initial setup
-    setChatActiveState(false); // Ensure username entry is shown first
+    setChatActiveState(false); 
     updateOnlineCount(0); 
-    // populateEmojiPicker(); // Call once at load, or on first click
 });
